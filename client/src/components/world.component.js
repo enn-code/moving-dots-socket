@@ -14,14 +14,33 @@ const Map = styled.div`
 
 const World = ({ width, height }) => {
   const [activePlayer, setActivePlayer] = useState("red");
+
+  const [redSocket, setRedSocket] = useState();
+  const [blueSocket, setBlueSocket] = useState();
+  const [greenSocket, setGreenSocket] = useState();
+
   const [coords, setCoords] = useState({
     red: [100, 200],
     blue: [200, 200],
     green: [300, 200]
   });
 
+  const handleSocket = (colour, socket) => {
+    console.log("handleSocket", colour, socket);
+
+    switch (colour) {
+      case "red":
+        return setRedSocket(socket);
+      case "blue":
+        return setBlueSocket(socket);
+      case "green":
+        return setGreenSocket(socket);
+      default:
+        return;
+    }
+  };
+
   const handleClick = colour => {
-    console.log("selected player");
     setActivePlayer(colour);
   };
 
@@ -44,16 +63,30 @@ const World = ({ width, height }) => {
         break;
     }
 
-    console.log(movement, coords, activePlayer);
-
     const newCoords = [
       coords[activePlayer][0] + movement[0],
       coords[activePlayer][1] + movement[1]
     ];
 
-    console.log("moving player", newCoords);
+    // TODO: validation to limit movement to boundaries of 'canvas'
 
-    return setCoords({ ...coords, [activePlayer]: newCoords });
+    setCoords({ ...coords, [activePlayer]: newCoords });
+
+    const emitType = "movement";
+
+    switch (activePlayer) {
+      case "red":
+        return redSocket.emit(emitType, [`${activePlayer} has moved`, coords]);
+      case "blue":
+        return blueSocket.emit(emitType, [`${activePlayer} has moved`, coords]);
+      case "green":
+        return greenSocket.emit(emitType, [
+          `${activePlayer} has moved`,
+          coords
+        ]);
+      default:
+        return;
+    }
   };
 
   document.onkeydown = e => {
@@ -74,6 +107,7 @@ const World = ({ width, height }) => {
         <Player
           isActive={isActive}
           handleClick={handleClick.bind(this)}
+          handleSocket={handleSocket}
           colour={colour}
           x={x}
           y={y}

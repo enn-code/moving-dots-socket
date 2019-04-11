@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
+import socketIOClient from "socket.io-client";
 
 const PlayerSprite = styled.span`
   position: absolute;
@@ -11,7 +12,18 @@ const PlayerSprite = styled.span`
   border: solid 1px ${props => (props.isActive ? "white" : "none")};
 `;
 
-const Player = ({ isActive, handleClick, colour, x, y }) => {
+const Player = ({ isActive, handleClick, handleSocket, colour, x, y }) => {
+  useEffect(() => {
+    console.log("mounted");
+    const socket = socketIOClient("http://localhost:80");
+    socket.on("playerUpdate", data => console.log("new update:", data));
+
+    socket.on("broadcast", data =>
+      console.log(`${colour} player received new coordinate data:`, data)
+    );
+    handleSocket(colour, socket);
+  }, []);
+
   return (
     <PlayerSprite
       isActive={isActive}
