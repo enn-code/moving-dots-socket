@@ -67,10 +67,12 @@ const World = ({ width, height }) => {
     const playerColours = ["red", "blue", "green"];
 
     return playerColours.map(colour => {
+      const isActive = activePlayer === colour;
       const x = coords[colour][0];
       const y = coords[colour][1];
       return (
         <Player
+          isActive={isActive}
           handleClick={handleClick.bind(this)}
           colour={colour}
           x={x}

@@ -8,7 +8,7 @@ const PlayerSprite = styled.span`
   width: 10px;
   height: 10px;
   background-color: ${props => props.colour};
-  border: solid 1px ${props => props.isActive || "none"};
+  border: solid 1px ${props => (props.isActive ? "white" : "none")};
 `;
 
 const Player = ({ isActive, handleClick, colour, x, y }) => {
